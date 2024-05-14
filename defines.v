@@ -1,5 +1,5 @@
 //data width
-`define Datawidth 64
+`define Datawidth 32
 
 //ring size
 `define Ringsize 256

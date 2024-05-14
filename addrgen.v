@@ -5,16 +5,20 @@ module addrgen (
     input start,  // whole system start
     input valid,  
     output reg [`Addrwidth-1:0] i,  //number of bfus caculated 
-    output reg [4:0] j,  //stage 
-    output reg ena_0,
-    output reg ena_1,
-    output reg ena_2,
-    output reg enb_0,
-    output reg enb_1,
-    output reg enb_2,
-    output reg wea_0,
-    output reg wea_1,
-    output reg wea_2,
+    output reg [4:0] j,  //stage
+    output reg en,  //bfu enable 
+    output reg ram0_ena,
+    output reg ram1_ena,
+    output reg ram2_ena,
+    output reg ram0_enb,
+    output reg ram1_enb,
+    output reg ram2_enb,
+    output reg ram0_wea,
+    output reg ram1_wea,
+    output reg ram2_wea,
+    output reg ram0_web,
+    output reg ram1_web,
+    output reg ram2_web,
     output reg [`Addrwidth-1:0] w_addr_ram0, 
     output reg [`Addrwidth-1:0] w_addr_ram1,
     output reg [`Addrwidth-1:0] w_addr_ram2,
@@ -23,7 +27,7 @@ module addrgen (
     output reg [`Addrwidth-1:0] r_addr_ram2
 );
 
-reg en;
+reg en_1;
 reg [5:0] k;  //块数
 reg [5:0] n;  //每个块中写到第几个数
 reg [5:0] num;  //每个块中数据个数
@@ -32,10 +36,18 @@ reg ram_flag;
 //启动 ????
 always @(posedge clk or negedge reset) begin
     if (!reset) begin
+        en_1 <= 0;
+    end else if (start) begin
+        en_1 <= 1;
+    end
+end
+always @(posedge clk or negedge reset) begin
+    if (!reset) begin
         en <= 0;
     end else if (start) begin
-        en <= 1;
-    end
+        en <= en_1;
+    end    
+    
 end
 // i 和 j 自增
 always @(posedge clk or negedge reset) begin
@@ -81,11 +93,11 @@ always @(posedge clk or negedge reset) begin
     else if (valid) begin
         if (k <= num) begin
 
-            if (ram_flag) begin
+            if (!ram_flag) begin
                 w_addr_ram0 <= (k-1) * (`Ringsize >> (j+1)) + n;
                 w_addr_ram1 <= k * (`Ringsize >> (j+1)) + n;    
             end 
-            else if (!ram_flag) begin
+            else if (ram_flag) begin
                 w_addr_ram0 <= (k-2) * (`Ringsize >> (j+1)) + n;
                 w_addr_ram1 <= (k-1) * (`Ringsize >> (j+1)) + n;     
             end
@@ -107,6 +119,45 @@ end
 
 `endif  
 
+//ram 控制
+always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+        ram0_ena <= 0;
+        ram1_ena <= 0;
+        ram2_ena <= 0;
+        ram0_enb <= 0;
+        ram1_enb <= 0;
+        ram2_enb <= 0;
+        ram0_wea <= 0;
+        ram1_wea <= 0;
+        ram2_wea <= 0;
+        ram0_web <= 0;
+        ram1_web <= 0;
+        ram2_web <= 0;
+    end else if (en_1) begin
+        ram0_ena <= 1;
+        ram1_ena <= 1;
+        ram2_ena <= 1;
+        ram0_enb <= 1;
+        ram1_enb <= 1;
+        ram2_enb <= 1;
+        if (!ram_flag) begin
+            ram0_wea <= 0;
+            ram0_web <= 0;
+            ram1_wea <= 1;
+            ram1_web <= 1;
+            ram2_wea <= 1;
+            ram2_web <= 1;         
+        end else if (ram_flag) begin
+            ram0_wea <= 1;
+            ram0_web <= 1;
+            ram1_wea <= 1;
+            ram1_web <= 1;
+            ram2_wea <= 0;
+            ram2_web <= 0;              
+        end
+    end  
+end
 
 //INTT
 `ifdef INTT
