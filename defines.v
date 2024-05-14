@@ -1,3 +1,6 @@
+//模数
+`define  p ((2**33)-(2**20)+1)
+
 //data width
 `define Datawidth 32
 
