@@ -1,4 +1,4 @@
-`include "defines.v"
+`include "define.v"
 module ntt2_pipeline_top (
     input clk,
     input reset,

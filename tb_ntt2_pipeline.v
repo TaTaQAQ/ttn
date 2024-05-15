@@ -1,4 +1,4 @@
-`include "defines.v"
+`include "define.v"
 `timescale  1ns / 1ps      
 
 module tb_ntt2_pipeline;   
