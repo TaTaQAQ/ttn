@@ -2,7 +2,7 @@
 `define  p ((2**33)-(2**20)+1)
 
 //data width
-`define Datawidth 64
+`define Datawidth 32
 
 //ring size
 `define Ringsize 256
