@@ -29,12 +29,10 @@ end
 
 initial
 begin
-    #(PERIOD*2) reset  =  1;
+    #PERIOD reset  =  1;
 end
 
-ntt2_pipeline #(
-    .p ( p ))
- u_ntt2_pipeline (
+ntt2_pipeline u_ntt2_pipeline (
     .clk                     ( clk          ),
     .reset                   ( reset        ),
     .xin                     ( xin    [`Datawidth:0] ),
@@ -49,9 +47,8 @@ ntt2_pipeline #(
 
 initial
 begin
-
+wr = 'd2**10;
 #10 en = 1;
-#10 wr = 'd2**10;
 
 end
 

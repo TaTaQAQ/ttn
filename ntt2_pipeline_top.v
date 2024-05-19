@@ -45,7 +45,7 @@ module ntt2_pipeline_top (
             xin2 <= 0;
             xin3 <= 0;
             xin4 <= 0;
-        end else begin
+        end else if (en) begin
             xin1 <= xin;
             xin2 <= xin1;
             xin3 <= xin2;
