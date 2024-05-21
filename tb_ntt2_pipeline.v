@@ -32,7 +32,7 @@ begin
     #PERIOD reset  =  1;
 end
 
-ntt2_pipeline u_ntt2_pipeline (
+ntt2_pipeline_top u_ntt2_pipeline (
     .clk                     ( clk          ),
     .reset                   ( reset        ),
     .xin                     ( xin    [`Datawidth:0] ),

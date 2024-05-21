@@ -1,5 +1,5 @@
 `include "define.v"
-`timescale  1ns / 1ps
+
 
 module tb_addrgen;
 
@@ -15,7 +15,7 @@ reg   valid                                = 0 ;
 
 // addrgen Outputs
 wire  [`Addrwidth-1:0]  i                  ;
-wire  [4:0]  j                             ;
+wire  [4:0]  stage                             ;
 wire  en                                   ;
 wire  ram0_ena                             ;
 wire  ram1_ena                             ;
@@ -33,6 +33,9 @@ wire  ram0_web                             ;
 wire  ram1_web                             ;
 wire  ram2_web                             ;
 wire  ram3_web                             ;
+wire ram_flag_w;
+wire stage_flag_w;
+wire stage_flag_r;
 wire  [`Addrwidth-1:0]  w_addr_0           ;
 wire  [`Addrwidth-1:0]  w_addr_1           ;
 wire  [`Addrwidth-1:0]  r_addr_0           ;
@@ -46,7 +49,7 @@ end
 
 initial
 begin
-    #55  valid=1;
+    #85  valid=1;
 end
 
 initial
@@ -62,7 +65,7 @@ addrgen  u_addrgen (
     .valid                   ( valid                         ),
 
     .i                       ( i            [`Addrwidth-1:0] ),
-    .j                       ( j            [4:0]            ),
+    .stage                   ( stage        [4:0]            ),
     .en                      ( en                            ),
     .ram0_ena                ( ram0_ena                      ),
     .ram1_ena                ( ram1_ena                      ),
@@ -80,6 +83,9 @@ addrgen  u_addrgen (
     .ram1_web                ( ram1_web                      ),
     .ram2_web                ( ram2_web                      ),
     .ram3_web                ( ram3_web                      ),
+    .ram_flag_w              (ram_flag_w                     ),
+    .stage_flag_w            ( stage_flag_w                  ),
+    .stage_flag_r            ( stage_flag_r                  ),
     .w_addr_0                ( w_addr_0     [`Addrwidth-1:0] ),
     .w_addr_1                ( w_addr_1     [`Addrwidth-1:0] ),
     .r_addr_0                ( r_addr_0     [`Addrwidth-1:0] ),

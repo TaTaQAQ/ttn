@@ -35,7 +35,7 @@ module ntt2_pipeline_top (
     reg [`Datawidth+1:0] d_temp1;
     reg [`Datawidth+1:0] d_temp2;
 
-    assign z = wr * yin;  //求乘积
+    assign z = en?(wr * yin):z;  //求乘积
     assign z_temp = z;
     assign en_temp[0] = en;
 

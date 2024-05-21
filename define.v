@@ -13,6 +13,9 @@
 //address width = log2(Ringsize)-1
 `define Addrwidth 7
 
+//rom addrwidth log2(stage*stagenum)-1
+`define Addrwidth_rom 9
+
 //stage number of whole ntt = log2(Ringsize)
 `define Stage 8
 
