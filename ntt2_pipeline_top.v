@@ -142,9 +142,9 @@ mult_gen_0 mul1 (
             .rdy(en_temp[4])
         );
 
-//   assign valid = en_temp[4];
-//   assign xout = (xin4 + r_temp) % `p;
-    assign yout = (xin4 - r_temp + `p) % `p;
+    assign valid = en_temp[4];
+//    assign xout = (xin4 + r_temp) % `p;
+//    assign yout = (xin4 - r_temp + `p) % `p;
     assign xout = ((xin4 + r_temp)>=`p)?((xin4 + r_temp)-`p):(xin4 + r_temp);
     assign yout = ((xin4 - r_temp + `p)>=`p)?((xin4 - r_temp + `p)-`p):(xin4 - r_temp + `p);
 
