@@ -35,7 +35,13 @@ module ntt2_pipeline_top (
     reg [`Datawidth+1:0] d_temp1;
     reg [`Datawidth+1:0] d_temp2;
 
-    assign z = en?(wr * yin):z;  //求乘积
+mult_gen_0 mul1 (
+  .A(wr),  // input wire [32 : 0] A
+  .B(yin),  // input wire [32 : 0] B
+  .P(z)  // output wire [65 : 0] P
+);
+   // assign z = en?(wr * yin):z;  //求乘�?
+    
     assign z_temp = z;
     assign en_temp[0] = en;
 
@@ -136,8 +142,10 @@ module ntt2_pipeline_top (
             .rdy(en_temp[4])
         );
 
-    assign valid = en_temp[4];
-    assign xout = (xin4 + r_temp) % `p;
+//   assign valid = en_temp[4];
+//   assign xout = (xin4 + r_temp) % `p;
     assign yout = (xin4 - r_temp + `p) % `p;
+    assign xout = ((xin4 + r_temp)>=`p)?((xin4 + r_temp)-`p):(xin4 + r_temp);
+    assign yout = ((xin4 - r_temp + `p)>=`p)?((xin4 - r_temp + `p)-`p):(xin4 - r_temp + `p);
 
 endmodule
