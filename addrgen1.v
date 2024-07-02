@@ -6,7 +6,7 @@ module addrgen1 (
     input valid, 
     output reg [`Addrwidth:0] i,
     output reg [4:0] stage, //
-    output reg en, //bfu enable 
+    output reg bfu_en, //bfu_en enable 
     output reg ram0_ena,
     output reg ram1_ena,
     output reg ram2_ena,
@@ -32,11 +32,12 @@ module addrgen1 (
 );
 
 
-reg en_d;
+reg en;
 reg valid_d;
 reg [4:0] j;
 reg [9:0] n;
-//bfu start
+reg w_ram_flag_ahead;
+//bfu_en start
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         en <= 0;
@@ -47,9 +48,9 @@ end
 
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        en <= 0;
+        bfu_en <= 0;
     end else if (start) begin
-        en <= en_d;
+        bfu_en <= en;
     end    
 end
 
@@ -57,9 +58,9 @@ end
 always @(*) begin
     if (i < 4) begin
         if (!stage_flag) begin
-            ram0_ena = start;
+            ram0_ena = bfu_en;
             ram0_enb = 0;
-            ram1_ena = start;
+            ram1_ena = bfu_en;
             ram1_enb = 0;
             ram2_ena = 0;
             ram2_enb = 0;
@@ -70,61 +71,61 @@ always @(*) begin
             ram0_enb = 0;
             ram1_ena = 0;
             ram1_enb = 0;
-            ram2_ena = start;
+            ram2_ena = bfu_en;
             ram2_enb = 0;
-            ram3_ena = start;
+            ram3_ena = bfu_en;
             ram3_enb = 0;
         end
     end else if ((i >= 4) && (i < `Stagebnum)) begin
         if (!stage_flag) begin
-            if (w_ram_flag) begin
-            ram0_ena = start;
+            if (!w_ram_flag) begin
+            ram0_ena = bfu_en;
             ram0_enb = 0;
-            ram1_ena = start;
+            ram1_ena = bfu_en;
             ram1_enb = 0;
-            ram2_ena = start;
-            ram2_enb = start;
+            ram2_ena = bfu_en;
+            ram2_enb = bfu_en;
             ram3_ena = 0;
             ram3_enb = 0;                
-            end else if (!w_ram_flag) begin
-            ram0_ena = start;
+            end else if (w_ram_flag) begin
+            ram0_ena = bfu_en;
             ram0_enb = 0;
-            ram1_ena = start;
+            ram1_ena = bfu_en;
             ram1_enb = 0;
             ram2_ena = 0;
             ram2_enb = 0;
-            ram3_ena = start;
-            ram3_enb = start;                
+            ram3_ena = bfu_en;
+            ram3_enb = bfu_en;                
             end
         end else if (stage_flag) begin
-            if (w_ram_flag) begin
-            ram0_ena = start;
-            ram0_enb = start;
+            if (!w_ram_flag) begin
+            ram0_ena = bfu_en;
+            ram0_enb = bfu_en;
             ram1_ena = 0;
             ram1_enb = 0;
-            ram2_ena = start;
+            ram2_ena = bfu_en;
             ram2_enb = 0;
-            ram3_ena = start;
+            ram3_ena = bfu_en;
             ram3_enb = 0;                
-            end else if (!w_ram_flag) begin
+            end else if (w_ram_flag) begin
             ram0_ena = 0;
             ram0_enb = 0;
-            ram1_ena = start;
-            ram1_enb = start;
-            ram2_ena = start;
+            ram1_ena = bfu_en;
+            ram1_enb = bfu_en;
+            ram2_ena = bfu_en;
             ram2_enb = 0;
-            ram3_ena = start;
+            ram3_ena = bfu_en;
             ram3_enb = 0;                
             end
         end
     end else if ((i >= `Stagebnum) && (i < (`Stagebnum+3))) begin
-            ram0_ena = start;
-            ram0_enb = start;
-            ram1_ena = start;
-            ram1_enb = start;
-            ram2_ena = start;
+            ram0_ena = bfu_en;
+            ram0_enb = bfu_en;
+            ram1_ena = bfu_en;
+            ram1_enb = bfu_en;
+            ram2_ena = bfu_en;
             ram2_enb = 0;
-            ram3_ena = start;
+            ram3_ena = bfu_en;
             ram3_enb = 0;        
     end
 end
@@ -137,10 +138,10 @@ always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         i <= 0;
     end 
-    else if (en_d & (i <= (`Stagebnum+3))) begin
+    else if (bfu_en & (i < (`Stagebnum+3))) begin
         i <= i + 1;
     end 
-    else if (i > (`Stagebnum+3)) begin
+    else if (i >= (`Stagebnum+3)) begin
         i <= 0;
     end 
 end
@@ -167,21 +168,31 @@ end
 
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        w_ram_flag <= 0;
+        w_ram_flag_ahead <= 0;
         n <= 0;
     end 
-    else if (valid) begin
-        w_addr_0 <= n;
-        w_addr_1 <= n + 1;
-
-        if (n >= (`Stagebnum >> 1)) begin
+    else if ((i>=3) & (i<131)) begin
+        if (n >= (`Stagebnum -2)) begin
             n <= 0;
-            w_ram_flag <= ~w_ram_flag;
+            w_ram_flag_ahead <= ~w_ram_flag_ahead;
         end else begin
             n <= n + 2;
         end
+        w_addr_0 <= n;
+        w_addr_1 <= n + 1;
     end
 end
+
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        w_ram_flag <= 0;
+    end
+    else 
+    begin
+        w_ram_flag <= w_ram_flag_ahead;
+    end
+end
+
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         ram0_wea <= 0;
