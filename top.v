@@ -5,13 +5,13 @@ module top (
     input start,
     output reg valid_all
 );
-reg [`Datawidth:0] wr;
+wire [`Datawidth:0] wr;
 reg [`Datawidth:0] xin;
 reg [`Datawidth:0] yin;
 wire [`Datawidth:0] xout;
 wire [`Datawidth:0] yout;
 
-wire  [`Addrwidth-1:0]  i                  ;
+wire  [`Addrwidth:0]  i                  ;
 wire  [4:0]  j                             ;
 wire  bfu_en                               ;
 wire  ram0_ena                             ;
@@ -41,6 +41,13 @@ reg [`Datawidth:0] din0;
 reg [`Datawidth:0] din1;
 wire [`Datawidth:0] dout0;
 wire [`Datawidth:0] dout1;
+
+always @(*) begin
+    xin = dout0;
+    yin = dout1;
+    din0 = xout;
+    din1 = yout;
+end
 
 wire [`Addrwidth_rom:0] addr_rom;
 

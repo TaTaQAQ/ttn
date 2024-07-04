@@ -2,7 +2,7 @@
 module seek_cd
 (
     input clk,
-    input reset,
+    input rst_n,
     input [2*`Datawidth+1:0] z,
     input en,
     
@@ -10,8 +10,8 @@ module seek_cd
     output reg [`Datawidth+1:0] d,
     output reg rdy
 );
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             c <= 'b0;
             d <= 'b0;
             rdy <= 'b0;

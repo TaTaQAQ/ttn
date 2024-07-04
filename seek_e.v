@@ -3,15 +3,15 @@ module seek_e
  
 (
     input clk,
-    input reset,
+    input rst_n,
     input [`Datawidth-1:0] c,
     input en,
     
     output reg [`Datawidth-1:0] e,
     output reg rdy
 );
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             e <= 'b0;
             rdy <= 'b0;
         end 

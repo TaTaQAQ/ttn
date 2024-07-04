@@ -2,7 +2,7 @@
 module seek_f
 (
     input clk,
-    input reset,
+    input rst_n,
     input [`Datawidth-1:0] c,
     input [`Datawidth-1:0] e,
     input en,
@@ -10,8 +10,8 @@ module seek_f
     output reg [`Datawidth+2:0] f,
     output reg rdy
 );
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             f <= 'b0;
             rdy <= 'b0;
         end 
