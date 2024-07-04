@@ -14,8 +14,9 @@ reg   valid                                = 0 ;
 
 // addrgen1 Outputs
 wire  [`Addrwidth:0]  i                    ;
-wire  [4:0]  stage                         ;
+wire  [4:0]           j                    ;
 wire  bfu_en                               ;
+wire  rom_en                               ;
 wire  ram0_ena                             ;
 wire  ram1_ena                             ;
 wire  ram2_ena                             ;
@@ -34,6 +35,7 @@ wire  ram2_web                             ;
 wire  ram3_web                             ;
 wire  w_ram_flag                           ;
 wire  stage_flag                           ;
+wire  [`Addrwidth_rom:0]  addr_rom         ;
 wire  [`Addrwidth-1:0]  w_addr_0           ;
 wire  [`Addrwidth-1:0]  w_addr_1           ;
 wire  [`Addrwidth-1:0]  r_addr_0           ;
@@ -59,8 +61,9 @@ addrgen1  u_addrgen1 (
     .valid                   ( valid                        ),
 
     .i                       ( i           [`Addrwidth:0]   ),
-    .stage                   ( stage       [4:0]            ),
+    .j                       ( j           [4:0]            ),
     .bfu_en                  ( bfu_en                       ),
+    .rom_en                  ( rom_en                       ),
     .ram0_ena                ( ram0_ena                     ),
     .ram1_ena                ( ram1_ena                     ),
     .ram2_ena                ( ram2_ena                     ),
@@ -79,6 +82,7 @@ addrgen1  u_addrgen1 (
     .ram3_web                ( ram3_web                     ),
     .w_ram_flag              ( w_ram_flag                   ),
     .stage_flag              ( stage_flag                   ),
+    .addr_rom                ( addr_rom   [`Addrwidth_rom:0]),
     .w_addr_0                ( w_addr_0    [`Addrwidth-1:0] ),
     .w_addr_1                ( w_addr_1    [`Addrwidth-1:0] ),
     .r_addr_0                ( r_addr_0    [`Addrwidth-1:0] ),
