@@ -1,7 +1,7 @@
 `include "define.v"
 module ntt2_pipeline_top (
     input clk,
-    input reset,
+    input rst_n,
     input [`Datawidth:0] xin,
     input [`Datawidth:0] yin,
     input [`Datawidth:0] wr,
@@ -45,8 +45,8 @@ mult_gen_0 mul1 (
     assign z_temp = z;
     assign en_temp[0] = en;
 
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             xin1 <= 0;
             xin2 <= 0;
             xin3 <= 0;
@@ -59,8 +59,8 @@ mult_gen_0 mul1 (
         end
     end
 
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             z_temp1 <= 0;
             z_temp2 <= 0;
             z_temp3 <= 0;
@@ -75,7 +75,7 @@ mult_gen_0 mul1 (
         (
             //input
             .clk(clk),
-            .reset(reset),
+            .rst_n(rst_n),
             .en(en_temp[0]),
             .z(z_temp),
             //output
@@ -84,16 +84,16 @@ mult_gen_0 mul1 (
             .rdy(en_temp[1])
         );
 
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             c_temp1 <= 0;
         end else begin
             c_temp1 <= c_temp;
         end
     end
 
-    always @(posedge clk or negedge reset) begin
-        if (!reset) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             d_temp1 <= 0;
             d_temp2 <= 0;
         end else begin
@@ -107,7 +107,7 @@ mult_gen_0 mul1 (
         (
             //input
             .clk(clk),
-            .reset(reset),
+            .rst_n(rst_n),
             .en(en_temp[1]),
             .c(c_temp),
             //output
@@ -119,7 +119,7 @@ mult_gen_0 mul1 (
         (
             //input
             .clk(clk),
-            .reset(reset),
+            .rst_n(rst_n),
             .en(en_temp[2]),
             .c(c_temp1),
             .e(e_temp),
@@ -132,7 +132,7 @@ mult_gen_0 mul1 (
         (
             //input
             .clk(clk),
-            .reset(reset),
+            .rst_n(rst_n),
             .en(en_temp[3]),
             .f(f_temp),
             .z(z_temp3),

@@ -10,16 +10,16 @@ parameter MAX_NUM = 32'hffffffff;
 
 // ntt2_pipeline Inputs
 reg   clk                                  = 0 ;
-reg   reset                                = 0 ;
-reg   [`Datawidth:0]  xin                           = 0 ;
-reg   [`Datawidth:0]  yin                           = 0 ;
-reg   [`Datawidth:0]  wr                            = 0 ;
+reg   rst_n                                = 0 ;
+reg   [`Datawidth:0]  xin                  = 0 ;
+reg   [`Datawidth:0]  yin                  = 0 ;
+reg   [`Datawidth:0]  wr                   = 0 ;
 reg   en                                   = 0 ;
 
 // ntt2_pipeline Outputs
-wire  [`Datawidth:0]  xout                          ;
-wire  [`Datawidth:0]  yout                          ;
-wire  valid                                ;
+wire  [`Datawidth:0]  xout                     ;
+wire  [`Datawidth:0]  yout                     ;
+wire  valid                                    ;
 
 
 initial
@@ -29,12 +29,12 @@ end
 
 initial
 begin
-    #PERIOD reset  =  1;
+    #PERIOD rst_n  =  1;
 end
 
 ntt2_pipeline_top u_ntt2_pipeline (
     .clk                     ( clk          ),
-    .reset                   ( reset        ),
+    .rst_n                   ( rst_n        ),
     .xin                     ( xin    [`Datawidth:0] ),
     .yin                     ( yin    [`Datawidth:0] ),
     .wr                      ( wr     [`Datawidth:0] ),
