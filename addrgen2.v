@@ -1,5 +1,5 @@
 `include "define.v"
-module addrgen1 (
+module addrgen2 (
     input wire clk,
     input rst_n,
     input start, // whole system start
@@ -97,7 +97,7 @@ always @(*) begin
             ram3_ena = bfu_en;
             ram3_enb = 0;
         end
-    end else if ((i >= 4) && (i < `Stagebnum)) begin
+    end else if ((i >= 4) && (i < `Stagebnum )) begin
         if (!stage_flag) begin
             if (!w_ram_flag) begin
             ram0_ena = bfu_en;
@@ -139,7 +139,7 @@ always @(*) begin
             ram3_enb = 0;                
             end
         end
-    end else if ((i >= `Stagebnum) && (i < (`Stagebnum+3))) begin
+    end else if ((i >= `Stagebnum ) && (i < (`Stagebnum+4))) begin
         if (!stage_flag) begin
             ram0_ena = 0;
             ram0_enb = 0;
@@ -200,10 +200,10 @@ always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         i <= 0;
     end 
-    else if (bfu_en & (i < (`Stagebnum+3))) begin
+    else if (bfu_en & (i < (`Stagebnum+4))) begin
         i <= i + 1;
     end 
-    else if (i >= (`Stagebnum+3)) begin
+    else if (i >= (`Stagebnum+4)) begin
         i <= 0;
     end 
 end
@@ -223,7 +223,7 @@ always @(posedge clk or negedge rst_n) begin
        j <= 1;
        stage_flag <= 0;
     end 
-    else if (i == (`Stagebnum+3)) begin
+    else if (i == (`Stagebnum+4)) begin
        j <= j + 1;
        stage_flag <= ~stage_flag;
     end 
@@ -234,7 +234,7 @@ always @(posedge clk or negedge rst_n) begin
         w_ram_flag_ahead <= 0;
         n <= 0;
     end 
-    else if ((i>=3) & (i<131)) begin
+    else if ((i>=4) & (i<132)) begin
         if (n >= (`Stagebnum -2)) begin
             n <= 0;
             w_ram_flag_ahead <= ~w_ram_flag_ahead;
@@ -270,7 +270,9 @@ always @(*) begin
     else if (en) begin
         if (!stage_flag) begin
             ram0_wea = 0;
+            ram0_web = 0;
             ram1_wea = 0; 
+            ram1_web = 0;
             if (!w_ram_flag) begin
                 ram2_wea = 1;
                 ram2_web = 1;
@@ -284,7 +286,9 @@ always @(*) begin
             end
         end else if (stage_flag) begin
             ram2_wea = 0;
-            ram3_wea = 0;             
+            ram2_web = 0;
+            ram3_wea = 0;
+            ram3_web = 0;
             if (!w_ram_flag) begin
                 ram0_wea = 1;
                 ram0_web = 1;

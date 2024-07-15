@@ -1,6 +1,6 @@
 `include "define.v"
-module ntt2_pipeline_top (
-    input clk,
+module ntt2_pipeline_top_test (
+    input clk_in1,
     input rst_n,
     input [`Datawidth:0] xin,
     input [`Datawidth:0] yin,
@@ -9,6 +9,7 @@ module ntt2_pipeline_top (
 
     output [`Datawidth:0] xout,
     output [`Datawidth:0] yout,
+    output reg clk,
     output valid
 );
 
@@ -21,6 +22,7 @@ module ntt2_pipeline_top (
     wire [`Datawidth+2:0] r_temp ;
     wire [5:0] en_temp ;
     wire [2*`Datawidth+1:0] z ; 
+    wire clk_out1;
 
     reg [`Datawidth:0] xin1;
     reg [`Datawidth:0] xin2;
@@ -31,7 +33,6 @@ module ntt2_pipeline_top (
     reg [2*`Datawidth+1:0] z_temp1; 
     reg [2*`Datawidth+1:0] z_temp2; 
     reg [2*`Datawidth+1:0] z_temp3; 
-    reg [2*`Datawidth+1:0] z_temp4;
 
     reg [`Datawidth-1:0] c_temp1;
     reg [`Datawidth-1:0] c_temp2;
@@ -47,7 +48,20 @@ module ntt2_pipeline_top (
   .B(yin),  // input wire [32 : 0] B
   .P(z)  // output wire [65 : 0] P
 );*/
-    assign z = en?(wr * yin):z;  //求乘�?
+assign z = en?(wr * yin):z;  //求乘�?
+
+clk_wiz_0 ins_clk_1
+   (
+    // Clock out ports
+    .clk_out1(clk_out1),     // output clk_out1
+    // Status and control signals
+    .resetn(rst_n), // input reset
+   // Clock in ports
+    .clk_in1(clk_in1)      // input clk_in1
+);
+always @(*) begin
+    clk = clk_out1;
+end
 
     assign z_temp = z;
     assign en_temp[0] = en;
@@ -127,7 +141,7 @@ module ntt2_pipeline_top (
             .e(e_temp),
             .rdy(en_temp[2])
         );
-    
+
    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             e_temp1 <= 0;

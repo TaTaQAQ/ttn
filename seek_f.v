@@ -3,7 +3,6 @@ module seek_f
 (
     input clk,
     input rst_n,
-    input [`Datawidth-1:0] c,
     input [`Datawidth-1:0] e,
     input en,
     
@@ -16,7 +15,7 @@ module seek_f
             rdy <= 'b0;
         end 
         else if(en)begin
-            f <= (e[13] + e[12:0])*(2**20) - e[13] - c[14:13];
+            f <= {(e[13] + e[12:0]),20'b0};
             rdy <= en;
         end
         else begin
